@@ -1,5 +1,5 @@
 (define-sdl-func (* sdl-rw-ops-t) sdl-rw-from-file ((file string) (mode string)) "SDL_RWFromFile")
-(define-sdl-func (* sdl-rw-ops-t) sdl-rw-from-fp ((fp (* file)) (autoclose sdl-bool-t)) "SDL_RWFromFP")
+(define-sdl-func (* sdl-rw-ops-t) sdl-rw-from-fp ((fp (* file)) (autoclose (& sdl-bool-t))) "SDL_RWFromFP")
 (define-sdl-func (* sdl-rw-ops-t) sdl-rw-from-mem ((mem void*) (size int)) "SDL_RWFromMem")
 (define-sdl-func (* sdl-rw-ops-t) sdl-rw-from-const-mem ((mem void*) (size int)) "SDL_RWFromConstMem")
 (define-sdl-func (* sdl-rw-ops-t) sdl-alloc-rw () "SDL_AllocRW")

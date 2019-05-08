@@ -2,6 +2,7 @@
 (define-sdl-func void sdl-unlock-joysticks () "SDL_UnlockJoysticks")
 (define-sdl-func int sdl-num-joysticks () "SDL_NumJoysticks")
 (define-sdl-func string sdl-joystick-name-for-index ((device_index int)) "SDL_JoystickNameForIndex")
+(define-sdl-func int sdl-joystick-get-device-player-index ((device_index int)) "SDL_JoystickGetDevicePlayerIndex")
 ;;blacklisted probably because it uses a struct as value.
 (define sdl-joystick-get-device-guid #f)
 (define-sdl-func uint16 sdl-joystick-get-device-vendor ((device_index int)) "SDL_JoystickGetDeviceVendor")
@@ -10,8 +11,9 @@
 (define-sdl-func sdl-joystick-type-t sdl-joystick-get-device-type ((device_index int)) "SDL_JoystickGetDeviceType")
 (define-sdl-func sdl-joystick-id-t sdl-joystick-get-device-instance-id ((device_index int)) "SDL_JoystickGetDeviceInstanceID")
 (define-sdl-func (* sdl-joystick-t) sdl-joystick-open ((device_index int)) "SDL_JoystickOpen")
-(define-sdl-func (* sdl-joystick-t) sdl-joystick-from-instance-id ((joyid sdl-joystick-id-t)) "SDL_JoystickFromInstanceID")
+(define-sdl-func (* sdl-joystick-t) sdl-joystick-from-instance-id ((joyid (& sdl-joystick-id-t))) "SDL_JoystickFromInstanceID")
 (define-sdl-func string sdl-joystick-name ((joystick (* sdl-joystick-t))) "SDL_JoystickName")
+(define-sdl-func int sdl-joystick-get-player-index ((joystick (* sdl-joystick-t))) "SDL_JoystickGetPlayerIndex")
 ;;blacklisted probably because it uses a struct as value.
 (define sdl-joystick-get-guid #f)
 (define-sdl-func uint16 sdl-joystick-get-vendor ((joystick (* sdl-joystick-t))) "SDL_JoystickGetVendor")
@@ -36,5 +38,6 @@
 (define-sdl-func uint8 sdl-joystick-get-hat ((joystick (* sdl-joystick-t)) (hat int)) "SDL_JoystickGetHat")
 (define-sdl-func int sdl-joystick-get-ball ((joystick (* sdl-joystick-t)) (ball int) (dx (* int)) (dy (* int))) "SDL_JoystickGetBall")
 (define-sdl-func uint8 sdl-joystick-get-button ((joystick (* sdl-joystick-t)) (button int)) "SDL_JoystickGetButton")
+(define-sdl-func int sdl-joystick-rumble ((joystick (* sdl-joystick-t)) (low_frequency_rumble uint16) (high_frequency_rumble uint16) (duration_ms uint32)) "SDL_JoystickRumble")
 (define-sdl-func void sdl-joystick-close ((joystick (* sdl-joystick-t))) "SDL_JoystickClose")
 (define-sdl-func sdl-joystick-power-level-t sdl-joystick-current-power-level ((joystick (* sdl-joystick-t))) "SDL_JoystickCurrentPowerLevel")

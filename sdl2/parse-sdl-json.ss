@@ -52,59 +52,77 @@
   (let ([xd (string-downcase x)])
     (if (and (string-prefix? "sdl-" xd) 
 	     (not  (or (string-suffix? "*" x) (string-suffix? "-t" x))))
-	(string-append x "-t")
-	x)))
+      (string-append x "-t")
+      x)))
 
 (define (add-* x)
   (string-append x "*"))
- 
+
+(define (add-& x)
+  (let ([xd (string-downcase (if (symbol? x) (symbol->string x) x))])
+    (if (and (string-prefix? "sdl-" xd))
+      `(& ,x)
+      x)))
+
+(define (remove-& x)
+  (if (and (list? x)
+           (eq? (car x) '&))
+    (cadr x)
+    x))
+
 (define (decode-type t)
   (if t
-      (let-json-object t (tag type)
-		       (let ([tag* (if (string? tag) (string->symbol tag) tag)])
-			 (case tag*
-			   [:function-pointer 'void*]
-			   [:int 'int]
-			   [:unsigned-int 'unsigned-int]
-			   [:unsigned-long-long 'unsigned-long-long]
-			   [:unsigned-long 'unsigned-long]
-			   [:long 'long]
-			   [:double 'double]
-			   [:long-double 'long-double]
-			   [:float 'float]
-			   [:pointer (let ([pt (decode-type type)])
-				       (case pt
-					 (char 'string)
-					 (string 'void*)
-					 (void 'void*)
-					 (else
-					  (if (and (pair? pt ) (eq? (car pt) '*))
-					      pt ;; DOUBLE STAR SEEMS NOT SUPPORTED ON CHEZ
-					      `(* ,pt))
-					  #;(string->symbol 
-					   (add-*
-					    (symbol->string pt))))))]
-			   [:void 'void]
-			   [:char 'char]
-			   [else (if (symbol? tag*)
-				     (string->symbol 
-				      (add-t
-				       (anti-camel 
-					(symbol->string tag*))))
-				     tag*)])))
-      #f))
+    (let-json-object t (tag type)
+		     (let ([tag* (if (string? tag) (string->symbol tag) tag)])
+		       (case tag*
+			 [:function-pointer 'void*]
+			 [:int 'int]
+                         [:uint 'uint]
+			 [:unsigned-int 'unsigned-int]
+			 [:unsigned-long-long 'unsigned-long-long]
+			 [:unsigned-long 'unsigned-long]
+			 [:long 'long]
+			 [:double 'double]
+			 [:long-double 'long-double]
+			 [:float 'float]
+			 [:pointer (let ([pt (remove-& (decode-type type))])
+				     (case pt
+				       (char 'string)
+				       (string 'void*)
+				       (void 'void*)
+				       (else
+					(if (and (pair? pt ) (eq? (car pt) '*))
+					  pt ;; DOUBLE STAR SEEMS NOT SUPPORTED ON CHEZ
+					  `(* ,pt))
+					#;(string->symbol 
+					(add-*
+					(symbol->string pt))))))]
+			 [:void 'void]
+			 [:char 'char]
+			 [else
+                          (if (symbol? tag*)
+                            (add-& (string->symbol 
+			            (add-t
+			             (anti-camel 
+			              (symbol->string tag*)))))
+			    tag*)])))
+    #f))
 (define (decode-param p n)
   (let-json-object p (tag name type)
 		   (if (equal? name "") 
-		       (list (string-append "arg-" (number->string n)) (decode-type type))
-		       (list name (decode-type type)))))
+		     (list (string-append "arg-" (number->string n)) (decode-type type))
+		     (list name (decode-type type)))))
 
 (define blacklist '(sdl-joystick-instance-id 
 		    sdl-joystick-get-device-guid
 		    sdl-joystick-get-guid 
 		    sdl-joystick-get-guid-string 
 		    sdl-joystick-get-guid-from-string
-		    sdl-game-controller-mapping-for-guid))
+		    sdl-game-controller-mapping-for-guid
+                    sdl-get-yuv-conversion-mode
+                    sdl-get-yuv-conversion-mode-for-resolution
+                    sdl-set-yuv-conversion-mode
+                    sdl-get-display-orientation))
 
 (import (only (srfi s13 strings) string-contains))
 (define (parse-json-function x m)
@@ -117,20 +135,20 @@
 				(string-prefix? "IMG_" name)
 				(string-prefix? "STTF_" name)
 				(string-prefix? "TTF_" name)))
-		       (cond
-			[(memq (string->symbol (anti-camel name)) blacklist)
-			 (printf ";;blacklisted probably because it uses a struct as value.\n(define ~d #f)\n" (anti-camel name))]
-			[else
-			   (printf "(define-sdl-func ~d ~d ~d \"~d\")\n"
-				   (decode-type return-type) 
-				   (case name
-				     ("SDL_log" "sdl-logn")
-				     (else (anti-camel name)))
-				   
-				   (map (lambda (p n) (decode-param p n)) 
-					(vector->list parameters) 
-					(iota (vector-length parameters)))
-				   name)]))))
+		     (cond
+		      [(memq (string->symbol (anti-camel name)) blacklist)
+		       (printf ";;blacklisted probably because it uses a struct as value.\n(define ~d #f)\n" (anti-camel name))]
+		      [else
+		       (printf "(define-sdl-func ~d ~d ~d \"~d\")\n"
+			       (remove-& (decode-type return-type))
+			       (case name
+				 ("SDL_log" "sdl-logn")
+				 (else (anti-camel name)))
+			       
+			       (map (lambda (p n) (decode-param p n)) 
+				    (vector->list parameters) 
+				    (iota (vector-length parameters)))
+			       name)]))))
 
 (define sdl2-modules-func
   '(assert atomic audio clipboard

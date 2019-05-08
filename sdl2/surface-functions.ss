@@ -10,12 +10,13 @@
 (define-sdl-func int sdl-save-bmp-rw ((surface (* sdl-surface-t)) (dst (* sdl-rw-ops-t)) (freedst int)) "SDL_SaveBMP_RW")
 (define-sdl-func int sdl-set-surface-rle ((surface (* sdl-surface-t)) (flag int)) "SDL_SetSurfaceRLE")
 (define-sdl-func int sdl-set-color-key ((surface (* sdl-surface-t)) (flag int) (key uint32)) "SDL_SetColorKey")
+(define-sdl-func sdl-bool-t sdl-has-color-key ((surface (* sdl-surface-t))) "SDL_HasColorKey")
 (define-sdl-func int sdl-get-color-key ((surface (* sdl-surface-t)) (key (* uint32))) "SDL_GetColorKey")
 (define-sdl-func int sdl-set-surface-color-mod ((surface (* sdl-surface-t)) (r uint8) (g uint8) (b uint8)) "SDL_SetSurfaceColorMod")
 (define-sdl-func int sdl-get-surface-color-mod ((surface (* sdl-surface-t)) (r (* uint8)) (g (* uint8)) (b (* uint8))) "SDL_GetSurfaceColorMod")
 (define-sdl-func int sdl-set-surface-alpha-mod ((surface (* sdl-surface-t)) (alpha uint8)) "SDL_SetSurfaceAlphaMod")
 (define-sdl-func int sdl-get-surface-alpha-mod ((surface (* sdl-surface-t)) (alpha (* uint8))) "SDL_GetSurfaceAlphaMod")
-(define-sdl-func int sdl-set-surface-blend-mode ((surface (* sdl-surface-t)) (blendMode sdl-blend-mode-t)) "SDL_SetSurfaceBlendMode")
+(define-sdl-func int sdl-set-surface-blend-mode ((surface (* sdl-surface-t)) (blendMode (& sdl-blend-mode-t))) "SDL_SetSurfaceBlendMode")
 (define-sdl-func int sdl-get-surface-blend-mode ((surface (* sdl-surface-t)) (blendMode (* sdl-blend-mode-t))) "SDL_GetSurfaceBlendMode")
 (define-sdl-func sdl-bool-t sdl-set-clip-rect ((surface (* sdl-surface-t)) (rect (* sdl-rect-t))) "SDL_SetClipRect")
 (define-sdl-func void sdl-get-clip-rect ((surface (* sdl-surface-t)) (rect (* sdl-rect-t))) "SDL_GetClipRect")
@@ -30,3 +31,9 @@
 (define-sdl-func int sdl-soft-stretch ((src (* sdl-surface-t)) (srcrect (* sdl-rect-t)) (dst (* sdl-surface-t)) (dstrect (* sdl-rect-t))) "SDL_SoftStretch")
 (define-sdl-func int sdl-upper-blit-scaled ((src (* sdl-surface-t)) (srcrect (* sdl-rect-t)) (dst (* sdl-surface-t)) (dstrect (* sdl-rect-t))) "SDL_UpperBlitScaled")
 (define-sdl-func int sdl-lower-blit-scaled ((src (* sdl-surface-t)) (srcrect (* sdl-rect-t)) (dst (* sdl-surface-t)) (dstrect (* sdl-rect-t))) "SDL_LowerBlitScaled")
+;;blacklisted probably because it uses a struct as value.
+(define sdl-set-yuv-conversion-mode #f)
+;;blacklisted probably because it uses a struct as value.
+(define sdl-get-yuv-conversion-mode #f)
+;;blacklisted probably because it uses a struct as value.
+(define sdl-get-yuv-conversion-mode-for-resolution #f)

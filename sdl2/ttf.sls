@@ -57,22 +57,22 @@
    ttf-size-unicode
 
    ;;;render solid
-   sttf-render-text-solid
-   sttf-render-ut-f8-solid
-   sttf-render-unicode-solid
-   sttf-render-glyph-solid
+   ttf-render-text-solid
+   ttf-render-ut-f8-solid
+   ttf-render-unicode-solid
+   ttf-render-glyph-solid
 
    ;;;render shaded
-   sttf-render-text-shaded
-   sttf-render-ut-f8-shaded
-   sttf-render-unicode-shaded
-   sttf-render-glyph-shaded
+   ttf-render-text-shaded
+   ttf-render-ut-f8-shaded
+   ttf-render-unicode-shaded
+   ttf-render-glyph-shaded
 
    ;;;render blended
-   sttf-render-text-blended
-   sttf-render-ut-f8-blended
-   sttf-render-unicode-blended
-   sttf-render-glyph-blended
+   ttf-render-text-blended
+   ttf-render-ut-f8-blended
+   ttf-render-unicode-blended
+   ttf-render-glyph-blended
 
    ;;;library init
    sdl-ttf-library-init
